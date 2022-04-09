@@ -1,11 +1,13 @@
 import React, { useEffect,useState } from 'react'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {useUserAuth} from '../../context/UserAuthContext'
-import { auth } from '../../firebase';
+import {addData, editData , deleteData} from '../../Redux/action'
 
 function Home() {
   const [todo,setTodo] = useState([]);
   const {user,logOut} = useUserAuth();
+  const [todoName,setTodoName] = useState("");
+  const dispatch = useDispatch();
 
   const store = useSelector((state)=>state.todoList);
 
@@ -22,14 +24,41 @@ function Home() {
     }
   }
   
+  /*=======================================
+            Handle Add
+  =========================================*/
+  const handleAdd = () =>{
+    let newData = {
+      id: new Date().getTime().toString(),
+      name : todoName
+    }
+
+    dispatch(addData(newData));
+    setTodoName("")
+  }
+
+  /*=======================================
+            Handle Delete
+  =========================================*/
+  const handleDelete = (id) => {
+     dispatch(deleteData(id))
+  }
+
+
+
   return (
     <div>
       <h1>Welcome {user.email}</h1>
       <div className="div_log_out">
         <button onClick={handleLogoOut}>Log out</button>
       </div>
+      <br />
+      <div className="inputField">
+        <input type="text" value={todoName} onChange={(event)=>setTodoName(event.target.value)}/>
+        <button onClick={()=>handleAdd()}>Add</button>
+      </div>
       <div className="showTodo">
-        <table>
+        <table border="1">
           <thead>
             <tr>
               <th>#Id</th>
@@ -43,7 +72,7 @@ function Home() {
                 return(<tr>
                   <td>{item.id}</td>
                   <td>{item.name}</td>
-                  <td><button>Edit</button><button>Delete</button></td>
+                  <td><button>Edit</button><button onClick={()=>handleDelete(item.id)}>Delete</button></td>
                 </tr>)
               })
             }

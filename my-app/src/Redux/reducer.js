@@ -22,13 +22,14 @@ const initialState = {
 export const todoReducer = (state = initialState, action) => {
     switch(action.type)
     {
-        case "ADD_TODO":
+        case "ADD_DATA":
+                       console.log(action.payload)
                        return {
                            ...state,
                            todoList:[...state.todoList, action.payload]
                        }
 
-        case "EDIT_TODO":
+        case "EDIT_DATA":
                         let updatedData = state.todoList.map((todo)=>{
                             if(todo.id === action.payload.id){
                                 return todo.name = action.payload.name;
@@ -41,7 +42,7 @@ export const todoReducer = (state = initialState, action) => {
                             todoList:[...updatedData]
                         }
 
-        case "DELETE_TODO":
+        case "DELETE_DATA":
                           let filteredData = state.todoList.filter((todo)=>{
                               return todo.id !== action.payload
                           })
